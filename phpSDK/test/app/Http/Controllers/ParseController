@@ -1,0 +1,31 @@
+<?php namespace App\Http\Controllers;
+
+use Parse\ParseClient;
+use Parse\ParseObject; 
+use Parse\ParseUser; 
+use Illuminate\Http\Request;
+use Parse\ParseSessionStorage;
+
+
+
+class MoviesController extends Controller
+{
+	public function __construct()
+    {
+    	ParseClient::initialize('QPFTtheMPSYYm4mOuVXme3Ta49DE0l2jFIyT3zzI', 'eKqJ5BZrp1N9jafT28JphRlvVKO05Az1aNWLN5XU', 'PNKKkWglhjvgYQnpIiShd37kL7t7nhbVMS7Swhpa');
+    }
+
+	public function index() 
+	{
+		return view('signup');
+	}
+
+
+
+
+
+
+
+
+
+}
