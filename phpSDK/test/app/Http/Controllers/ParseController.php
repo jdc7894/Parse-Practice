@@ -5,6 +5,7 @@ use Parse\ParseObject;
 use Parse\ParseUser; 
 use Illuminate\Http\Request;
 use Parse\ParseSessionStorage;
+use \Input; 
 
 class ParseController extends Controller
 {
@@ -22,7 +23,6 @@ class ParseController extends Controller
 
 	public function signup() 
 	{
-		//ParseClient::initialize('QPFTtheMPSYYm4mOuVXme3Ta49DE0l2jFIyT3zzI', 'eKqJ5BZrp1N9jafT28JphRlvVKO05Az1aNWLN5XU', 'PNKKkWglhjvgYQnpIiShd37kL7t7nhbVMS7Swhpa');
 		$name = Input::get('user_name');
 		$email = Input::get('user_email');
 		$password = Input::get('user_password');
@@ -47,8 +47,7 @@ class ParseController extends Controller
 
 	public function login() 
 	{
-			/* if logged in, return to welcome page */
-		//ParseClient::initialize('QPFTtheMPSYYm4mOuVXme3Ta49DE0l2jFIyT3zzI', 'eKqJ5BZrp1N9jafT28JphRlvVKO05Az1aNWLN5XU', 'PNKKkWglhjvgYQnpIiShd37kL7t7nhbVMS7Swhpa');
+		/* if logged in, return to welcome page */
 		$user = ParseUser::getCurrentUser();
 		if($user) {						// redirects to welcome page if user is logged in 
 			return view('welcome', [
@@ -61,7 +60,6 @@ class ParseController extends Controller
 
 	public function logout() 
 	{
-		//ParseClient::initialize('QPFTtheMPSYYm4mOuVXme3Ta49DE0l2jFIyT3zzI', 'eKqJ5BZrp1N9jafT28JphRlvVKO05Az1aNWLN5XU', 'PNKKkWglhjvgYQnpIiShd37kL7t7nhbVMS7Swhpa');
 		ParseUser::logOut();
 		return view('login');
 	}
@@ -84,7 +82,6 @@ class ParseController extends Controller
 
 	public function edit() 
 	{
-		//ParseClient::initialize('QPFTtheMPSYYm4mOuVXme3Ta49DE0l2jFIyT3zzI', 'eKqJ5BZrp1N9jafT28JphRlvVKO05Az1aNWLN5XU', 'PNKKkWglhjvgYQnpIiShd37kL7t7nhbVMS7Swhpa');
 		$user = ParseUser::getCurrentUser();
 		$name = $user->get('username'); 
 		$email = $user->get('email');
@@ -99,9 +96,8 @@ class ParseController extends Controller
 		$name = $request->input('username');
 		$password = $request->input('password');
 		$email = $request->input('email');
-		
-		//ParseClient::initialize('QPFTtheMPSYYm4mOuVXme3Ta49DE0l2jFIyT3zzI', 'eKqJ5BZrp1N9jafT28JphRlvVKO05Az1aNWLN5XU', 'PNKKkWglhjvgYQnpIiShd37kL7t7nhbVMS7Swhpa');
 		$user = ParseUser::getCurrentUser();
+		
 		if ($user) {							// update user info
 			if($name) {
 				$user->set("username", $name);  
