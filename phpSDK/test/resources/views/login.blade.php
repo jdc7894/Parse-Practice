@@ -9,7 +9,7 @@
     <body>
       <div id="login">
       	<div class="container">
-        	<form class="form-signin" role="form" action="/welcome" method="get">
+        	<form class="form-signin" role="form" action="/checkCredential" method="get">
           		<h2 class="form-signin-heading"> Please sign in </h2>
 	            <input type="text" id = "username" name="username" class="form-control" placeholder="Username" required="" autofocus="">
 	            <input type="password" id = "password" name="password" class="form-control" placeholder="Password" required="">

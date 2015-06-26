@@ -34,3 +34,22 @@ $('.form-signin').on('submit', function(e) {
         }
     });
 });
+
+$("#target").submit(function(e) {
+    e.preventDefault();     
+    var user = new Parse.User();
+    user.set("username", document.getElementById('name').value);
+    user.set("password", document.getElementById('password').value);
+    user.set("email", document.getElementById('mail').value);
+
+    // other fields can be set just like with Parse.Object
+    user.signUp(null, {
+      success: function(user) {
+        alert(document.getElementById('name').value + "is saved" );
+      },
+      error: function(user, error) {
+        // Show the error message somewhere and let the user try again.
+        alert("Error: " + error.code + " " + error.message);
+      }
+    });
+});

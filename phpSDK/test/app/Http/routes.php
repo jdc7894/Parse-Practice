@@ -1,11 +1,5 @@
 <?php
 
-use Parse\ParseClient;
-use Parse\ParseObject; 
-use Parse\ParseUser; 
-use Illuminate\Http\Request;
-use Parse\ParseSessionStorage;
-
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -24,15 +18,15 @@ Route::get('/', function () {
 
 Route::get('/index', 'ParseController@index');
 
-Route::get('/signup', 'ParseController@signup');
+Route::get('/signup', 'ParseController@signUp');
 
-Route::get('/login', 'ParseController@login');
+Route::get('/login', 'ParseController@logIn');
 
-Route::get('logout', 'ParseController@logout');
+Route::get('/logout', 'ParseController@logOut');
 
-Route::get('/welcome', 'ParseController@welcome'); 
+Route::get('/checkCredential', 'ParseController@checkCredential'); 
 
-Route::get('/edit', 'ParseController@edit'); 
+Route::get('/showEditPage', 'ParseController@showEditPage'); 
 
 Route::get('/update', 'ParseController@update'); 
 

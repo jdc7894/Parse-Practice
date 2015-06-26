@@ -9,7 +9,7 @@
     <body>
         <div class="user-welcome">
         <h2>Hey, {{$name}} </a></h2>
-        <p><a href="/edit">Edit your profile here </p>
+        <p><a href="/showEditPage">Edit your profile here </p>
         <p><a href="/logout">Click here to logout </p>
     </div>
     </body>
