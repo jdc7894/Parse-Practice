@@ -4,7 +4,6 @@
         <title>Sign Up Form</title>
         <link rel="stylesheet" href="css/normalize.css">
         <link href='http://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="css/main.css">
         <script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.4.2.min.js"></script>
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     </head>
@@ -26,9 +25,9 @@
           <label for="password">Password:</label>
           <input type="password" id="password" name="user_password">
           
-          <label>Age:</label>
-          <input type="radio" id="under_13" value="under_13" name="user_age"><label for="under_13" class="light">Under 13</label><br>
-          <input type="radio" id="over_13" value="over_13" name="user_age"><label for="over_13" class="light">13 or older</label>
+          <label>Subscription:</label>
+          <input type="radio" id="yes" value="true" name="subscription"><label for="yes" class="light">Yes</label><br>
+          <input type="radio" id="no" value="false" name="subscription"><label for="no" class="light">No</label>
         </fieldset>
         <button type="submit">Sign Up</button>
       </form>
