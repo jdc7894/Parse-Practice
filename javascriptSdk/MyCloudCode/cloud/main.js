@@ -3,8 +3,6 @@ var typeErrors = [];
 
 /* 
   This function gets automatically called by Parse when Parse User object is saved. 
-  List of data fields checked in this function is listed below. 
-
   Below is the full Data Model for User object. 
    ****************************************************
    * username                  (required)             *
@@ -21,6 +19,10 @@ var typeErrors = [];
    * platformPs4AccountId     : string                *
    * platformSteamAccountId   : string                *
    ****************************************************
+
+   The input checks are cosisted of 2 types of test. 
+   1. Required fields check. Check that all the required fields are provided.  
+   2. Type check. If all the required fields are provided, make sure that the input is valid type. Note that this check will not be performed if at least one of the required fields is empty.  
 */
 Parse.Cloud.beforeSave(Parse.User, function(request, response) {
     var genderEnum = ["Male", "Female"];
@@ -31,83 +33,84 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
     var countryCode = request.object.get("country");
     var errorMessage = "";
     var errors = [];                          // contains list of input fields that are invalid  
-    var isInvalidInput = false;               // will set to true if at least one input field is invalid  
-        
+    var isInvalidRequiredInput = false;               // will set to true if at least one input field is invalid  
+    var isInvalidTypeInput = false; 
+
     /* Required fields check. Make sure that the input value exists. */
     if(!request.object.get("username"))       
     { 
         requiredErrors.push("username");
-        isInvalidInput = true; 
+        isInvalidRequiredInput = true; 
     } 
     if(!request.object.get("email")) 
     {
         requiredErrors.push("email");
-        isInvalidInput = true; 
+        isInvalidRequiredInput = true; 
     } 
     if(!request.object.get("firstname"))       
     { 
         requiredErrors.push("firstname");
-        isInvalidInput = true; 
+        isInvalidRequiredInput = true; 
     } 
     if(!request.object.get("lastname"))       
     { 
         requiredErrors.push("lastname");
-        isInvalidInput = true; 
+        isInvalidRequiredInput = true; 
     } 
     if(typeof request.object.get("dob") === 'undefined')
     {
         requiredErrors.push("dob");
-        isInvalidInput = true; 
+        isInvalidRequiredInput = true; 
     }
     if(typeof request.object.get("isSubscribedToNewsletter") === 'undefined')    // not selected true/false value 
     {
         requiredErrors.push("subscription preference");
-        isInvalidInput = true; 
+        isInvalidRequiredInput = true; 
     }
     if(typeof countryCode === 'undefined')
     {
         requiredErrors.push("country code");
-        isInvalidInput = true; 
+        isInvalidRequiredInput = true; 
     }
     if(typeof registeredFromGame === 'undefined')
     {
         requiredErrors.push("registeredFromGame");
-        isInvalidInput = true; 
+        isInvalidRequiredInput = true; 
     }
 
     /* Type check. If all the required fields are provided, check they are valid types. */
-    if(!isInvalidInput)
+    if(!isInvalidRequiredInput)                 // all the required fields are provided
     {
         /* Check for Date type. */
         if(!(request.object.get("dob") instanceof Date))
         {
             typeErrors.push("date of birth");
-            isInvalidInput = true; 
+            isInvalidTypeInput = true; 
         }
 
         /* Check for Enum String. Make sure that the input value exactly match one of the Enum values. */
-        if(countryEnum.indexOf(countryCode) == -1)                                // this country code does not exist in country code enum 
+        if(countryEnum.indexOf(countryCode) == -1)                // this country code does not exist in country code enum 
         {
             typeErrors.push("country code"); 
-            isInvalidInput = true; 
+            isInvalidTypeInput = true; 
         }
-        if(typeof genderType !== 'undefined')
+        if(typeof genderType !== 'undefined')                     // this Enum is only enforced if input is provided because this field is not. 
         {
             if(genderEnum.indexOf(genderType) == -1)                                    // if the input type does not belong ot typeEnum
             {
                 typeErrors.push("gender");
-                isInvalidInput = true; 
+                isInvalidTypeInput = true; 
             }
         }
         if(registeredFromGameEnum.indexOf(registeredFromGame) == -1)         // should be 'HFTR'
         {
             typeErrors.push("registeredFromGame");
-            isInvalidInput = true; 
+            isInvalidTypeInput = true; 
         }
     }
   
     /* Returns success/failure response */ 
-    if(isInvalidInput)      // return with error message, user object will not be saved to Parse. 
+    if(isInvalidRequiredInput || isInvalidTypeInput)      // return with error message, user object will not be saved to Parse. 
     {
         errorMessage = generateErrorMessage(requiredErrors,typeErrors);
         response.error(errorMessage);
@@ -131,11 +134,16 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
    * dateActivated   (required)   *
    * dateDeactivated              *
    ********************************
+
+   The input checks are cosisted of 2 types of test. 
+   1. Required fields check. Check that all the required fields are provided.  
+   2. Type check. If all the required fields are provided, make sure that the input is valid type. Note that this check will not be performed if at least one of the required fields is empty.  
 */
 Parse.Cloud.beforeSave("HFTRAward", function(request, response) {
     var errorMessage = "";
     var errors = [];  
-    var isInvalidInput = false; 
+    var isInvalidRequiredInput = false;               // will set to true if at least one input field is invalid  
+    var isInvalidTypeInput = false;
 
     /* name is likely to be not removed from this Data Model. TBD */
     // if(!request.object.get("name"))
@@ -148,11 +156,11 @@ Parse.Cloud.beforeSave("HFTRAward", function(request, response) {
     if(typeof request.object.get("dateActivated") === 'undefined')
     {
         requiredErrors.push("dateActivated");
-        isInvalidInput = true; 
+        isInvalidRequiredInput = true; 
     }
 
     /* Type check. If all the required fields are provided, check they are valid types. */
-    if(!isInvalidInput)
+    if(!isInvalidRequiredInput)
     {
         /* Check for Date type. */
         if(!(request.object.get("dateActivated") instanceof Date))
@@ -163,7 +171,7 @@ Parse.Cloud.beforeSave("HFTRAward", function(request, response) {
     }
     
     /* Returns success/failure response */ 
-    if(isInvalidInput)
+    if(isInvalidRequiredInput || isInvalidTypeInput)
     {
         errorMessage = generateErrorMessage(requiredErrors,typeErrors); 
         response.error(errorMessage);
@@ -183,42 +191,48 @@ Parse.Cloud.beforeSave("HFTRAward", function(request, response) {
    * awardMeta                    *
    * createdAt       (required)   *
    ********************************
+
+   The input checks are cosisted of 2 types of test. 
+   1. Required fields check. Check that all the required fields are provided.  
+   2. Type check. If all the required fields are provided, make sure that the input is valid type. Note that this check will not be performed if at least one of the required fields is empty.  
+
 */
 
 Parse.Cloud.beforeSave("HFTRUserEarnedAward", function(request, response) { 
     var errorMessage = "";
     var errors = [];  
-    var isInvalidInput = false; 
-
+    var isInvalidRequiredInput = false;               // will set to true if at least one input field is invalid  
+    var isInvalidTypeInput = false;
+    
     /* Required fields check. Make sure that the input value exists. */
     if(typeof request.object.get("associatedUser") === 'undefined')
     {
         requiredErrors.push("associatedUser");
-        isInvalidInput = true; 
+        isInvalidRequiredInput = true; 
     }
     if(typeof request.object.get("associatedAward") === 'undefined')
     {
         requiredErrors.push("associatedAward");
-        isInvalidInput = true; 
+        isInvalidRequiredInput = true; 
     }
 
     /* Type check. If all the required fields are provided, check they are valid types. */
-    if(!isInvalidInput)
+    if(!isInvalidRequiredInput)
     {
         if(request.object.get("associatedUser").className !== "_User")
         {
             typeErrors.push("associatedUser");
-            isInvalidInput = true; 
+            isInvalidTypeInput = true; 
         }
         if(request.object.get("associatedAward").className  !== "HFTRAward")
         {
             typeErrors.push("associatedAward");  
-            isInvalidInput = true; 
+            isInvalidTypeInput = true; 
         }
     }
 
     /* Returns success/failure response */ 
-    if(isInvalidInput)
+    if(isInvalidRequiredInput || isInvalidTypeInput)
     {
         errorMessage = generateErrorMessage(requiredErrors,typeErrors); 
         response.error(errorMessage);
@@ -246,78 +260,83 @@ Parse.Cloud.beforeSave("HFTRUserEarnedAward", function(request, response) {
    * associatedAward              *
    * _unique(type,group,name)     *
    ********************************
+
+   The input checks are cosisted of 2 types of test. 
+   1. Required fields check. Check that all the required fields are provided.  
+   2. Type check. If all the required fields are provided, make sure that the input is valid type. Note that this check will not be performed if at least one of the required fields is empty.  
 */
 
 Parse.Cloud.beforeSave("HFTRGeofence", function(request, response) {
     var typeEnum = ["Retailer", "ConventionCity", "ConventionCenter"];      // enforce enum strings
+    var inputType = request.object.get("type");
     var errorMessage = "";
     var errors = [];  
-    var isInvalidInput = false; 
-    var inputType = request.object.get("type");
+    var isInvalidRequiredInput = false;               // will set to true if at least one input field is invalid  
+    var isInvalidTypeInput = false;    
 
     /* Required fields check. Make sure that the input value exists. */
     if(typeof inputType === 'undefined')
     {
         requiredErrors.push("type"); 
-        isInvalidInput = true; 
+        isInvalidRequiredInput = true; 
     }
     if(!request.object.get("group"))
     {
         requiredErrors.push("group");
-        isInvalidInput = true; 
+        isInvalidRequiredInput = true; 
     }
     if(!request.object.get("name"))
     {
         requiredErrors.push("name"); 
-        isInvalidInput = true; 
+        isInvalidRequiredInput = true; 
     }
     if(typeof request.object.get("geoLocation") === 'undefined')
     {
         requiredErrors.push("geoLocation"); 
-        isInvalidInput = true; 
+        isInvalidRequiredInput = true; 
     }
     if(typeof request.object.get("geoRadius") === 'undefined')
     {
         requiredErrors.push("geoRadius"); 
-        isInvalidInput = true; 
+        isInvalidRequiredInput = true; 
     }
     if(typeof request.object.get("dateDeactivated") === 'undefined')
     {
         requiredErrors.push("dateDeactivated"); 
-        isInvalidInput = true; 
+        isInvalidRequiredInput = true; 
     }
 
     /* Type check. If all the required fields are provided, check they are valid types. */
-    if(!isInvalidInput)
+    if(!isInvalidRequiredInput)
     {
         /* Check for Enum strings. */
         if(typeEnum.indexOf(inputType) == -1)                      // if the input type does not belong ot typeEnum
         {
             typeErrors.push("type"); 
-            isInvalidInput = true; 
+            isInvalidTypeInput = true; 
         }
         /* Check for input Date type. */
         if(!(request.object.get("dateActivated") instanceof Date))
         {
             typeErrors.push("dateActivated"); 
-            isInvalidInput = true; 
+            isInvalidTypeInput = true; 
         }
 
         /* Check for input class type. */ 
         if(request.object.get("geoLocation").className !== "GeoPoint")        // TODO: check for GeoPoint 
         {
             typeErrors.push("geoLocation"); 
-            isInvalidInput = true; 
+            isInvalidTypeInput = true; 
         }
         if(!isInt(request.object.get("geoRadius")))       // use helper function to check if the value is Int
         {
             typeErrors.push("geoRadius"); 
-            isInvalidInput = true; 
+            isInvalidTypeInput = true; 
         }
     }
 
     /* Returns success/failure response */ 
-    if(isInvalidInput)
+    if(isInvalidRequiredInput || isInvalidTypeInput)
     {
         errorMessage = generateErrorMessage(requiredErrors,typeErrors); 
         response.error(errorMessage);
@@ -342,28 +361,33 @@ Parse.Cloud.beforeSave("HFTRGeofence", function(request, response) {
    * associatedGeofence                        *
    * _unique(uuid, majorVerison, minorVersion) *
    *********************************************
+
+   The input checks are cosisted of 2 types of test. 
+   1. Required fields check. Check that all the required fields are provided.  
+   2. Type check. If all the required fields are provided, make sure that the input is valid type. Note that this check will not be performed if at least one of the required fields is empty.  
 */
 
 Parse.Cloud.beforeSave("HFTRBeacon", function(request, response) {
     var errorMessage = "";
     var errors = [];  
-    var isInvalidInput = false;    
-    Parse.Cloud.useMasterKey(); 
+    var isInvalidRequiredInput = false;               // will set to true if at least one input field is invalid  
+    var isInvalidTypeInput = false;     
 
     /* Required fields check. Make sure that the input value exists. */
     if(!request.object.get("uuid"))
     {
         errors.push("group");
-        isInvalidInput = true; 
+        isInvalidRequiredInput = true; 
     }
 
     /* Type check. If all the required fields are provided, check they are valid types. */
+    /* Check type of input if input has value (because these fields are not required). */
     if(typeof request.object.get("associatedAward") !== 'undefined')  // if associated award is provided, it should be a ParsePointer type to Award
     {
         if(request.object.get("associatedAward").className  !== "HFTRAward")
         {
             errors.push("associatedAward");
-            isInvalidInput = true; 
+            isInvalidTypeInput = true; 
         } 
     }
     if(typeof request.object.get("associatedGeofence") !== 'undefined')  // if associated Geofence is provided, it should be a ParsePointer type to Geofence
@@ -371,7 +395,7 @@ Parse.Cloud.beforeSave("HFTRBeacon", function(request, response) {
         if(request.object.get("associatedGeofence").className  !== "HFTRGeofence")
         {
             errors.push("invalid pointer type for associatedGeofence");
-            isInvalidInput = true; 
+            isInvalidTypeInput = true; 
         } 
         /* TODO: this check needs to be tested.. */
         // else if(request.object.get("associatedGeofence").type !== "ConventionCenter")  // Geofence type should be ConventionCenter 
@@ -390,7 +414,7 @@ Parse.Cloud.beforeSave("HFTRBeacon", function(request, response) {
         //   //   }
         //   // });
         //   errors.push("Geofence should be ConventionCenter");
-        //   isInvalidInput = true; 
+        //   isInvalidTypeInput = true; 
         // }
     }
     if(typeof request.object.get("radius") !== 'undefined')   // if radius is provided, it should be Integer type
@@ -398,12 +422,12 @@ Parse.Cloud.beforeSave("HFTRBeacon", function(request, response) {
         if(!isInt(request.object.get("radius")))
         {
             errors.push("radius"); 
-            isInvalidInput = true; 
+            isInvalidTypeInput = true; 
         }
     }
 
     /* Returns success/failure response */ 
-    if(isInvalidInput)
+    if(isInvalidRequiredInput || isInvalidTypeInput)
     {
         errorMessage += generateErrorMessage(errors); 
         response.error(errorMessage);
