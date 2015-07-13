@@ -15,17 +15,21 @@ $("#target").submit(function(e) {
     // user.set("username", document.getElementById('name').value);
     // user.set("password", document.getElementById('password').value);
     // user.set("email", document.getElementById('mail').value);
-    // user.set("dob", dob);
+    // user.set("firstname", "Sexy");
+    // user.set("lastname", "King");
+    // user.set("dob", "fuck");
     // user.set("registeredFromGame", "HFTR");
     // user.set("type", "ConventionCitys");
+    // user.set("country", "US");
+
     
     // if(subscriptionSelection == "true") {
     //     user.set("isSubscribedToNewsletter", true);
-    //     user.set("gender", "male");
+    //     user.set("gender", "Male");
     // } 
     // else if (subscriptionSelection == "false") {
     //     user.set("isSubscribedToNewsletter", false);
-    //     user.set("gender", "female");
+    //     user.set("gender", "Female");
     // }
     // // Parse beforeSave will be called before the object is saved. 
     // user.signUp(null, {
@@ -71,6 +75,7 @@ $("#target").submit(function(e) {
 
     // awardObject.save(null, {
     //   success: function(awardObject) {
+    //        // alert("Success baby");
     //   },
     //   error: function(awardObject, error) {
     //     alert('Failed to create award object, with error code: ' + error.message);
@@ -93,54 +98,75 @@ $("#target").submit(function(e) {
     //   }
     // });
 
+    /* Testing for GeoFence */
+     var HFTGeofence = Parse.Object.extend("HFTRGeofence"); 
+     var geoFenceObject = new HFTGeofence(); 
+     var dob = new Date( "2015"+"-"+"02" +"-"+ "03"); 
 
-    /* Testing for HFTRBeacon*/
-    var HFTRBeacon = Parse.Object.extend("HFTRBeacon");
-    var beaconObject = new HFTRBeacon(); 
 
-    var HFTRAward = Parse.Object.extend("HFTRAward");
-    var awardObject = new HFTRAward(); 
-
-    var HFTGeofence = Parse.Object.extend("HFTRGeofence"); 
-    var geoFenceObject = new HFTGeofence(); 
-
-    var dob = new Date( "2015"+"-"+"02" +"-"+ "03"); 
-
-    awardObject.set("name", "ultimate award");
-    awardObject.set("dateActivated", dob);
-
-    awardObject.save(null, {
-      success: function(awardObject) {
-      },
-      error: function(awardObject, error) {
-        alert('Failed to create award object, with error code: ' + error.message);
-      }
-    });
-
-    geoFenceObject.set("type", "ConventionCenter");
-    geoFenceObject.set("group", "Yolo");
-    geoFenceObject.set("name", "zzingkko");
+     var point = new Parse.GeoPoint(30.0, -20.0);
+     geoFenceObject.set("type", "ConventionCenter");
+     geoFenceObject.set("group", "Yolo");
+     geoFenceObject.set("name", "zzingkko");
+     geoFenceObject.set("geoLocation", "point");
+     geoFenceObject.set("geoRadius", "2");
+     geoFenceObject.set("dateDeactivated", dob);
 
     geoFenceObject.save(null, {
         success: function(geoFenceObject) {
 
         },
         error: function(geoFenceObject, error) {
-
+            alert(error.message);
         }
     });
+    /* Testing for HFTRBeacon*/
+    // var HFTRBeacon = Parse.Object.extend("HFTRBeacon");
+    // var beaconObject = new HFTRBeacon(); 
 
-    beaconObject.set("uuid", "Something");
-    beaconObject.set("associatedAward", awardObject);
-    beaconObject.set("associatedGeofence", geoFenceObject);
-    beaconObject.save(null, {
-        success: function(beaconObject) {
-            alert("Yolo! Success!");
-        },
-        error: function(beaconObject, error) {
-            alert('Failed: ' + error.message);
-        }
-    })     
+    // var HFTRAward = Parse.Object.extend("HFTRAward");
+    // var awardObject = new HFTRAward(); 
+
+    // var HFTGeofence = Parse.Object.extend("HFTRGeofence"); 
+    // var geoFenceObject = new HFTGeofence(); 
+
+    // var dob = new Date( "2015"+"-"+"02" +"-"+ "03"); 
+
+    // awardObject.set("name", "ultimate award");
+    // awardObject.set("dateActivated", dob);
+
+    // awardObject.save(null, {
+    //   success: function(awardObject) {
+    //   },
+    //   error: function(awardObject, error) {
+    //     alert('Failed to create award object, with error code: ' + error.message);
+    //   }
+    // });
+
+    // geoFenceObject.set("type", "ConventionCenter");
+    // geoFenceObject.set("group", "Yolo");
+    // geoFenceObject.set("name", "zzingkko");
+
+    // geoFenceObject.save(null, {
+    //     success: function(geoFenceObject) {
+
+    //     },
+    //     error: function(geoFenceObject, error) {
+
+    //     }
+    // });
+
+    // beaconObject.set("uuid", "Something");
+    // beaconObject.set("associatedAward", awardObject);
+    // beaconObject.set("associatedGeofence", geoFenceObject);
+    // beaconObject.save(null, {
+    //     success: function(beaconObject) {
+    //         alert("Yolo! Success!");
+    //     },
+    //     error: function(beaconObject, error) {
+    //         alert('Failed: ' + error.message);
+    //     }
+    // })     
 });
 
 /* Verify the user credntial and lets the user to login */
