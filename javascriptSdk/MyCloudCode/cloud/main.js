@@ -91,10 +91,13 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
             typeErrors.push("country code"); 
             isInvalidInput = true; 
         }
-        if(genderEnum.indexOf(genderType) == -1)                                    // if the input type does not belong ot typeEnum
+        if(typeof genderType !== 'undefined')
         {
-            typeErrors.push("gender");
-            isInvalidInput = true; 
+            if(genderEnum.indexOf(genderType) == -1)                                    // if the input type does not belong ot typeEnum
+            {
+                typeErrors.push("gender");
+                isInvalidInput = true; 
+            }
         }
         if(registeredFromGameEnum.indexOf(registeredFromGame) == -1)         // should be 'HFTR'
         {
